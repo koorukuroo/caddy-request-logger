@@ -1,4 +1,4 @@
-module github.com/your-username/caddy-request-logger
+module github.com/koorukuroo/caddy-request-logger
 
 go 1.21
 

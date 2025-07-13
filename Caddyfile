@@ -1,0 +1,49 @@
+:8080 {
+    # Request logger with all headers and body
+    request_logger {
+        log_level info
+        include_request_body
+        include_all_headers
+        max_body_size 1MB
+        base64_encode_body
+        exclude_headers Authorization X-API-Key
+        skip_paths /health /metrics
+        skip_methods OPTIONS
+        skip_content_types image/ video/
+    }
+    
+    # Simple file server for testing
+    file_server
+    
+    # Or reverse proxy
+    # reverse_proxy localhost:3000
+}
+
+# Alternative configuration - minimal setup
+:8081 {
+    # Basic request logging
+    request_logger {
+        include_request_body
+        include_headers Content-Type Authorization X-Real-IP
+        max_body_size 512KB
+    }
+    
+    respond "Hello World"
+}
+
+# Configuration for specific paths only
+:8082 {
+    route /api/* {
+        request_logger {
+            log_level debug
+            include_request_body
+            include_all_headers
+            max_body_size 2MB
+            skip_content_types multipart/form-data
+        }
+        reverse_proxy localhost:3000
+    }
+    
+    # No logging for other paths
+    respond "Public endpoint"
+} 
